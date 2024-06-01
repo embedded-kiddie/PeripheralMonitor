@@ -58,11 +58,11 @@ typedef enum {
 /*----------------------------------------------------------------------
  * Arduino digital pin No. to Port/Pin No. using digitalPinToBspPin()
  *----------------------------------------------------------------------*/
-#define BspToPort(bsp)      ((bsp) >> 8)
-#define BspToPin(bsp)       ((bsp) & 0xFF)
-#define PmnToBspPort(pmn)   ((pmn) / 100)
-#define PmnToBspPin(pmn)    ((pmn) % 100)
-#define digitalPinToPmn(p)  (BspToPort(digitalPinToBspPin(p)) * 100 + BspToPin(digitalPinToBspPin(p)))
+#define PmnToPfsPort(pmn)     ((pmn) / 100)   // for R_PFS->PORT[m].PIN[n]
+#define PmnToPfsPin(pmn)      ((pmn) % 100)   // for R_PFS->PORT[m].PIN[n]
+#define BspPinToPfsPort(bsp)  ((bsp) >> 8)    // Arduino pin No -> PORT[m]
+#define BspPinToPfsPin(bsp)   ((bsp) & 0xFF)  // Arduino pin No ->  PIN[n]
+#define digitalPinToPmn(p)    (BspPinToPfsPort(digitalPinToBspPin(p)) * 100 + BspPinToPfsPin(digitalPinToBspPin(p)))
 
 /*----------------------------------------------------------------------
  * List of commands
@@ -440,7 +440,7 @@ class PeripheralMonitor {
   }
 
   void setup_pfs(int arg) {
-    setup_pfs(PmnToBspPort(arg), PmnToBspPin(arg));
+    setup_pfs(PmnToPfsPort(arg), PmnToPfsPin(arg));
   }
 
   /*------------------------------------------------------------
