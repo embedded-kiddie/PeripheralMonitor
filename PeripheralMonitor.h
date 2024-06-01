@@ -60,6 +60,8 @@ typedef enum {
  *----------------------------------------------------------------------*/
 #define BspToPort(bsp)      ((bsp) >> 8)
 #define BspToPin(bsp)       ((bsp) & 0xFF)
+#define PmnToBspPort(pmn)   ((pmn) / 100)
+#define PmnToBspPin(pmn)    ((pmn) % 100)
 #define digitalPinToPmn(p)  (BspToPort(digitalPinToBspPin(p)) * 100 + BspToPin(digitalPinToBspPin(p)))
 
 /*----------------------------------------------------------------------
@@ -438,7 +440,7 @@ class PeripheralMonitor {
   }
 
   void setup_pfs(int arg) {
-    setup_pfs(arg / 100, arg % 100);
+    setup_pfs(PmnToBspPort(arg), PmnToBspPin(arg));
   }
 
   /*------------------------------------------------------------
