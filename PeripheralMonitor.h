@@ -572,7 +572,7 @@ class PeripheralMonitor {
       int c = digitalPinToBspPin(i);
       p = &R_PFS->PORT[BspToPort(c)].PIN[BspToPin(c)];
       c = i * 3 + 14;
-      sprintf(fmt, FMT_REGISTER_PINS, c, c, c, c, c, c, c, c, c, c, c, c, c, c, c, c, c, c, c, c);
+      sprintf(fmt, FMT_REGISTER_PINS, c, c, c, c, c, c, c, c, c, c, c, c);
       printf(fmt, p->PmnPFS_b.PODR, p->PmnPFS_b.PIDR, p->PmnPFS_b.PDR, p->PmnPFS_b.PCR, p->PmnPFS_b.PIM, p->PmnPFS_b.NCODR, p->PmnPFS_b.DSCR, p->PmnPFS_b.EOFR, p->PmnPFS_b.ISEL, p->PmnPFS_b.ASEL, p->PmnPFS_b.PMR, p->PmnPFS_b.PSEL);
     }
   }
