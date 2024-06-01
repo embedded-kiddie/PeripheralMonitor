@@ -1,0 +1,10 @@
+# Datatypes (KEYWORD1)
+PeripheralMonitor	KEYWORD1
+PeripheralType_t    KEYWORD1
+
+# Methods and Functions (KEYWORD2)
+begin			KEYWORD2
+scan_command	KEYWORD2
+show_register	KEYWORD2
+show_caption	KEYWORD2
+setup_register	KEYWORD2
