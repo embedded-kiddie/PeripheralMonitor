@@ -20,6 +20,9 @@
 #define _PERIPHERAL_MONITOR_
 
 #include <stdint.h>
+#include <stdarg.h>
+#include <stdio.h>
+#include "Serial.h"
 
 #undef  DEBUG
 #define DEBUG   0
@@ -55,8 +58,9 @@ typedef enum {
 /*----------------------------------------------------------------------
  * Arduino digital pin No. to Port/Pin No. using digitalPinToBspPin()
  *----------------------------------------------------------------------*/
-#define BspToPort(bsp)   ((bsp) >> 8)
-#define BspToPin(bsp)    ((bsp) & 0xFF)
+#define BspToPort(bsp)      ((bsp) >> 8)
+#define BspToPin(bsp)       ((bsp) & 0xFF)
+#define digitalPinToPmn(p)  (BspToPort(digitalPinToBspPin(p)) * 100 + BspToPin(digitalPinToBspPin(p)))
 
 /*----------------------------------------------------------------------
  * List of commands
