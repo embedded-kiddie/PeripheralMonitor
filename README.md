@@ -73,7 +73,7 @@ typedef enum {
 ### `setup_register`
 
 ```c++
-void setup_register(PeripheralType_t _type = PERIPHERAL_PORTS, int _arg = 0)
+void setup_register(PeripheralType_t type = PERIPHERAL_PORTS, int arg = 0)
 ```
 This method, like the method `begin`, changes the type of a peripheral.
 
