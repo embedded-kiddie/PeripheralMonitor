@@ -456,7 +456,7 @@ class PeripheralMonitor {
   void setup_digital(int arg) {
     if (0 <= arg && arg <= MAX_DIGITAL_PIN_N) {
       arg = digitalPinToBspPin(arg);
-      setup_pfs(BspToPort(arg), BspToPin(arg));
+      setup_pfs(BspPinToPfsPort(arg), BspPinToPfsPin(arg));
       return;
     }
     Serial.println("Digital: out of range.");
@@ -576,7 +576,7 @@ class PeripheralMonitor {
     // D0 〜 D19
     for (int i = 0; i <= MAX_DIGITAL_PIN_N ; i++) {
       int c = digitalPinToBspPin(i);
-      p = &R_PFS->PORT[BspToPort(c)].PIN[BspToPin(c)];
+      p = &R_PFS->PORT[BspPinToPfsPort(c)].PIN[BspPinToPfsPin(c)];
       c = i * 3 + 14;
       sprintf(fmt, FMT_REGISTER_PINS, c, c, c, c, c, c, c, c, c, c, c, c);
       printf(fmt, p->PmnPFS_b.PODR, p->PmnPFS_b.PIDR, p->PmnPFS_b.PDR, p->PmnPFS_b.PCR, p->PmnPFS_b.PIM, p->PmnPFS_b.NCODR, p->PmnPFS_b.DSCR, p->PmnPFS_b.EOFR, p->PmnPFS_b.ISEL, p->PmnPFS_b.ASEL, p->PmnPFS_b.PMR, p->PmnPFS_b.PSEL);
