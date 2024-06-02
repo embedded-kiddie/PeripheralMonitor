@@ -209,7 +209,7 @@ static const char * FMT_REGISTER_PFS = "\e[?25l\
 static const char * FMT_CAPTION_PINS = "\e[2J\
 \e[1;1HPINS\
 \
-\e[3;13HD0 D1 D2 D3 D4 D5 D6 D7 D8 D9 Da Db Dc De A0 A1 A2 A3 A4 A5\
+\e[3;13HD0 D1 D2 D3 D4 D5 D6 D7 D8 D9 Da Db Dc Dd A0 A1 A2 A3 A4 A5\
 \
 \e[3;1HPmnPFS\
 \e[4;2H- PODR[1]\
