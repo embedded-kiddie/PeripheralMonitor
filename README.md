@@ -46,13 +46,13 @@ You can see the following five screens through the terminal emulator on your hos
 ### `begin`
 
 ```c++
-bool begin(int baud_rate, PeripheralType_t _type = PERIPHERAL_PORTS, int _arg = 0)
+bool begin(int baud_rate, PeripheralType_t type = PERIPHERAL_PORTS, int arg = 0)
 ```
 
 This method initializes the `Serial1` object and sets the initial screen.  
   - `int baud_rate`  
   It must match the settings in the terminal emulator.
-  - `PeripheralType_t _type`  
+  - `PeripheralType_t type`  
   To set the initial screen, specify one of the following enumeration numbers:
 
 ```c++
@@ -67,7 +67,7 @@ typedef enum {
   PERIPHERAL_AGT,   // AGT0 〜 AGT1
 } PeripheralType_t;
 ```
-  - `int _arg`  
+  - `int arg`  
   Specify a numerical value according to `PeripheralType_t`.
 
 ### `setup_register`

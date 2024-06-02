@@ -417,10 +417,10 @@ class PeripheralMonitor {
   /*------------------------------------------------------------
    * Setup peripheral registers: PORT0 〜 PORT9
    *------------------------------------------------------------*/
-  void setup_port(int arg) {
-    if (0 <= arg && arg <= MAX_PFS_PORT_N) {
+  void setup_port(int port) {
+    if (0 <= port && port <= MAX_PFS_PORT_N) {
       peripheral = PERIPHERAL_PORT;
-      num_port = arg;
+      num_port = port;
       return;
     }
     Serial.println("PORT: out of range.");
@@ -439,8 +439,8 @@ class PeripheralMonitor {
     Serial.println("PFS: out of range.");
   }
 
-  void setup_pfs(int arg) {
-    setup_pfs(PmnToPfsPort(arg), PmnToPfsPin(arg));
+  void setup_pfs(int pmn) {
+    setup_pfs(PmnToPfsPort(pmn), PmnToPfsPin(pmn));
   }
 
   /*------------------------------------------------------------
@@ -453,10 +453,10 @@ class PeripheralMonitor {
   /*------------------------------------------------------------
    * Setup peripheral registers: D0 〜 D19
    *------------------------------------------------------------*/
-  void setup_digital(int arg) {
-    if (0 <= arg && arg <= MAX_DIGITAL_PIN_N) {
-      arg = digitalPinToBspPin(arg);
-      setup_pfs(BspPinToPfsPort(arg), BspPinToPfsPin(arg));
+  void setup_digital(int pin) {
+    if (0 <= pin && pin <= MAX_DIGITAL_PIN_N) {
+      pin = digitalPinToBspPin(pin);
+      setup_pfs(BspPinToPfsPort(pin), BspPinToPfsPin(pin));
       return;
     }
     Serial.println("Digital: out of range.");
@@ -465,9 +465,9 @@ class PeripheralMonitor {
   /*------------------------------------------------------------
    * Setup peripheral registers: A0 〜 A5
    *------------------------------------------------------------*/
-  void setup_analog(int arg) {
-    if (0 <= arg && arg <= MAX_ANALOG_PIN_N) {
-      setup_digital(arg + ANALOG_TO_DIGITAL);
+  void setup_analog(int pin) {
+    if (0 <= pin && pin <= MAX_ANALOG_PIN_N) {
+      setup_digital(pin + ANALOG_TO_DIGITAL);
       return;
     }
     Serial.println("Analog: out of range.");
@@ -476,18 +476,18 @@ class PeripheralMonitor {
   /*------------------------------------------------------------
    * Setup peripheral registers: AGT0 〜 AGT1
    *------------------------------------------------------------*/
-  void setup_agt(int arg) {
-    if (0 <= arg && arg < sizeof(p_agt) / sizeof(p_agt[0])) {
+  void setup_agt(int num) {
+    if (0 <= num && num < sizeof(p_agt) / sizeof(p_agt[0])) {
       peripheral = PERIPHERAL_AGT;
-      num_agt = arg;
+      num_agt = num;
       return;
     }
     Serial.println("AGT: out of range.");
   }
 
-  void show_help(int arg) {
+  void show_help(int i) {
     String cmd = "";
-    for (int i = 0; cmd_list[i] != NULL; i++) {
+    for (i = 0; cmd_list[i] != NULL; i++) {
       cmd += String(cmd_list[i]) + (cmd_list[i+1] != NULL ? ", " : "");
     }
     Serial.println("Possible commands: " + cmd);
@@ -513,12 +513,12 @@ class PeripheralMonitor {
   /*------------------------------------------------------------
    * Show peripheral registers: PORT0 〜 PORT9
    *------------------------------------------------------------*/
-  void show_port(int arg) {
-    if (0 <= arg && arg <= MAX_PFS_PORT_N) {
+  void show_port(int port) {
+    if (0 <= port && port <= MAX_PFS_PORT_N) {
       char buf[8][64];
-      volatile const R_PORT0_Type * P_PORT = p_port[arg];
+      volatile const R_PORT0_Type * P_PORT = p_port[port];
       printf(FMT_REGISTER_PORT,
-        /* PORT No            */ num_port,
+        /* PORT No            */ port,
 
         /* Port Control Register 1 */
         /* uint32_t PDR  : 16 */ P_PORT->PDR , dec2bin(buf[0], 16, P_PORT->PDR ), // Pmn Direction
@@ -547,7 +547,7 @@ class PeripheralMonitor {
       char buf[8];
       volatile const R_PFS_PORT_PIN_Type * P_PFS = &R_PFS->PORT[m].PIN[n];
       printf(FMT_REGISTER_PFS,
-        /* PORT No and PIN No */ num_pfs, num_pin,
+        /* PORT No and PIN No */ m, n,
         /* Port mn Pin Function Select Register */
         /* uint32_t PODR  : 1 */ P_PFS->PmnPFS_b.PODR,  // Port Output Data
         /* uint32_t PIDR  : 1 */ P_PFS->PmnPFS_b.PIDR,  // Port Input Data
@@ -586,11 +586,11 @@ class PeripheralMonitor {
   /*------------------------------------------------------------
    * Show peripheral registers: AGT0 〜 ARG1
    *------------------------------------------------------------*/
-  void show_agt(int arg) {
-    if (0 <= arg && arg < sizeof(p_agt) / sizeof(p_agt[0])) {
-      volatile const R_AGT0_Type * P_AGT = p_agt[arg];
+  void show_agt(int num) {
+    if (0 <= num && num < sizeof(p_agt) / sizeof(p_agt[0])) {
+      volatile const R_AGT0_Type * P_AGT = p_agt[num];
       printf(FMT_REGISTER_AGT,
-        /* AGT No             */ num_agt,
+        /* AGT No             */ num,
         /* uint16_t AGT       */ P_AGT->AGT,              // 16bit counter and reload register
         /* uint16_t AGTCMA    */ P_AGT->AGTCMA,           // AGT Compare Match A Register
         /* uint16_t AGTCMB    */ P_AGT->AGTCMB,           // AGT Compare Match B Register
@@ -642,14 +642,14 @@ class PeripheralMonitor {
   /*----------------------------------------------------------------------------------*/
 
   /*----------------------------------------------------------------------------------*/
-  void setup_register(PeripheralType_t _type = PERIPHERAL_PORTS, int _arg = 0) {
+  void setup_register(PeripheralType_t type = PERIPHERAL_PORTS, int arg = 0) {
   /*----------------------------------------------------------------------------------*/
-    switch (peripheral = _type) {
-      case PERIPHERAL_PORTS: setup_ports(_arg); break;
-      case PERIPHERAL_PORT:  setup_port(_arg); break;
-      case PERIPHERAL_PFS:   setup_pfs(_arg); break;
-      case PERIPHERAL_PINS:  setup_pins(_arg); break;
-      case PERIPHERAL_AGT:   setup_agt(_arg); break;
+    switch (peripheral = type) {
+      case PERIPHERAL_PORTS: setup_ports(arg); break;
+      case PERIPHERAL_PORT:  setup_port(arg); break;
+      case PERIPHERAL_PFS:   setup_pfs(arg); break;
+      case PERIPHERAL_PINS:  setup_pins(arg); break;
+      case PERIPHERAL_AGT:   setup_agt(arg); break;
       default: break;
     }
   }
