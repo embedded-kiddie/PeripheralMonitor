@@ -714,11 +714,11 @@ class PeripheralMonitor {
   }
 
   /*----------------------------------------------------------------------------------*/
-  bool begin(int baud_rate, PeripheralType_t _type = PERIPHERAL_PORTS, int _arg = 0) {
+  bool begin(int baud_rate, PeripheralType_t type = PERIPHERAL_PORTS, int arg = 0) {
   /*----------------------------------------------------------------------------------*/
     Serial1.begin(baud_rate, SERIAL_8N1);
     if (Serial1) {
-      setup_register(_type, _arg);
+      setup_register(type, arg);
       show_caption();
       return true;
     }
