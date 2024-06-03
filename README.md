@@ -115,6 +115,9 @@ When you type only return key without any commands, `show_caption` method is exe
 
 See [monitor_by_rtc.ino][4] using RTC for periodic monitoring in the [_examples_][5] directory.
 
+## Blog post
+
+- [Program to monitor peripheral circuit registers of Arduino UNO R4 - Embedded Kiddie](https://embedded--kiddie-github-io.translate.goog/2024/06/03/?_x_tr_sl=ja&_x_tr_tl=en&_x_tr_hl=ja&_x_tr_pto=wapp)
 
 [1]:https://embedded-kiddie.github.io/images/2024/06-03/fritzig.jpg
 
