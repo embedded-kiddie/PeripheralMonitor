@@ -107,7 +107,7 @@ static const char * FMT_CAPTION_PORTS = "\e[2J\
 \
 \e[15;1HPCNTR4\
 \e[16;2H- EOSR[16]\
-\e[17;2H- EORR[16]\
+\e[17;2H- EORR[16] \
 ";
 
 static const char * FMT_REGISTER_PORTS = "\
@@ -146,7 +146,7 @@ static const char * FMT_CAPTION_PORT = "\e[2J\
 \e[15;22HFEDC BA98 7654 3210\
 \e[15;1HPCNTR4\
 \e[16;2H- EOSR[16]\
-\e[17;2H- EORR[16]\
+\e[17;2H- EORR[16] \
 ";
 
 static const char * FMT_REGISTER_PORT = "\e[?25l\
@@ -183,7 +183,7 @@ static const char * FMT_CAPTION_PFS = "\e[2J\
 \e[12;2H- ISEL[1]\
 \e[13;2H- ASEL[1]\
 \e[14;2H- PMR[1]\
-\e[15;2H- PSEL[5]\
+\e[15;2H- PSEL[5] \
 ";
 
 static const char * FMT_REGISTER_PFS = "\e[?25l\
@@ -223,7 +223,7 @@ static const char * FMT_CAPTION_PINS = "\e[2J\
 \e[12;2H- ISEL[1]\
 \e[13;2H- ASEL[1]\
 \e[14;2H- PMR[1]\
-\e[15;2H- PSEL[5]\
+\e[15;2H- PSEL[5] \
 ";
 
 static const char * FMT_REGISTER_PINS = "\e[?25l\
@@ -293,7 +293,7 @@ static const char * FMT_CAPTION_AGT = "\e[2J\
 \
 \e[11;45HAGTIOSEL\
 \e[12;46H- SEL[2]\
-\e[13;46H- TIES[1]\
+\e[13;46H- TIES[1] \
 ";
 
 static const char * FMT_REGISTER_AGT = "\e[?25l\
