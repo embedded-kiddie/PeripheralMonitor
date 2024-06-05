@@ -75,7 +75,7 @@ static const char * cmd_list[] = {
  * Peripheral declaration: PORT0 〜 PORT9
  *----------------------------------------------------------------------*/
 static const R_PORT0_Type * p_port[] = {
-  R_PORT0, R_PORT1, R_PORT2,  R_PORT3,  R_PORT4,  R_PORT5,  R_PORT6, R_PORT7, R_PORT8, R_PORT9
+  R_PORT0, R_PORT1, R_PORT2, R_PORT3, R_PORT4, R_PORT5, R_PORT6, R_PORT7, R_PORT8, R_PORT9
 };
 
 /*----------------------------------------------------------------------
@@ -107,8 +107,8 @@ static const char * FMT_CAPTION_PORTS = "\e[2J\
 \
 \e[15;1HPCNTR4\
 \e[16;2H- EOSR[16]\
-\e[17;2H- EORR[16] \
-";
+\e[17;2H- EORR[16]\
+ ";
 
 static const char * FMT_REGISTER_PORTS = "\
 \e[?25l\
@@ -146,8 +146,8 @@ static const char * FMT_CAPTION_PORT = "\e[2J\
 \e[15;22HFEDC BA98 7654 3210\
 \e[15;1HPCNTR4\
 \e[16;2H- EOSR[16]\
-\e[17;2H- EORR[16] \
-";
+\e[17;2H- EORR[16]\
+ ";
 
 static const char * FMT_REGISTER_PORT = "\e[?25l\
 \e[1;5H%d\
@@ -183,8 +183,8 @@ static const char * FMT_CAPTION_PFS = "\e[2J\
 \e[12;2H- ISEL[1]\
 \e[13;2H- ASEL[1]\
 \e[14;2H- PMR[1]\
-\e[15;2H- PSEL[5] \
-";
+\e[15;2H- PSEL[5]\
+ ";
 
 static const char * FMT_REGISTER_PFS = "\e[?25l\
 \
@@ -223,8 +223,8 @@ static const char * FMT_CAPTION_PINS = "\e[2J\
 \e[12;2H- ISEL[1]\
 \e[13;2H- ASEL[1]\
 \e[14;2H- PMR[1]\
-\e[15;2H- PSEL[5] \
-";
+\e[15;2H- PSEL[5]\
+ ";
 
 static const char * FMT_REGISTER_PINS = "\e[?25l\
 \e[4;%dH%%d\
@@ -293,8 +293,8 @@ static const char * FMT_CAPTION_AGT = "\e[2J\
 \
 \e[11;45HAGTIOSEL\
 \e[12;46H- SEL[2]\
-\e[13;46H- TIES[1] \
-";
+\e[13;46H- TIES[1]\
+ ";
 
 static const char * FMT_REGISTER_AGT = "\e[?25l\
 \e[1;4H%d\
@@ -516,25 +516,25 @@ class PeripheralMonitor {
   void show_port(int port) {
     if (0 <= port && port <= MAX_PFS_PORT_N) {
       char buf[8][64];
-      volatile const R_PORT0_Type * P_PORT = p_port[port];
+      /*volatile*/ const R_PORT0_Type P_PORT = *p_port[port];
       printf(FMT_REGISTER_PORT,
         /* PORT No            */ port,
 
         /* Port Control Register 1 */
-        /* uint32_t PDR  : 16 */ P_PORT->PDR , dec2bin(buf[0], 16, P_PORT->PDR ), // Pmn Direction
-        /* uint32_t PODR : 16 */ P_PORT->PODR, dec2bin(buf[1], 16, P_PORT->PODR), // Pmn Output Data
+        /* uint32_t PDR  : 16 */ P_PORT.PDR , dec2bin(buf[0], 16, P_PORT.PDR ), // Pmn Direction
+        /* uint32_t PODR : 16 */ P_PORT.PODR, dec2bin(buf[1], 16, P_PORT.PODR), // Pmn Output Data
 
         /* Port Control Register 2 */
-        /* uint32_t PIDR : 16 */ P_PORT->PIDR, dec2bin(buf[2], 16, P_PORT->PIDR), // Pmn Input Data
-        /* uint32_t EIDR : 16 */ P_PORT->EIDR, dec2bin(buf[3], 16, P_PORT->EIDR), // Pmn Event Input Data
+        /* uint32_t PIDR : 16 */ P_PORT.PIDR, dec2bin(buf[2], 16, P_PORT.PIDR), // Pmn Input Data
+        /* uint32_t EIDR : 16 */ P_PORT.EIDR, dec2bin(buf[3], 16, P_PORT.EIDR), // Pmn Event Input Data
 
         /* Port Control Register 3 */
-        /* uint32_t POSR : 16 */ P_PORT->POSR, dec2bin(buf[4], 16, P_PORT->POSR), // Pmn Output Set
-        /* uint32_t PORR : 16 */ P_PORT->PORR, dec2bin(buf[5], 16, P_PORT->PORR), // Pmn Output Reset
+        /* uint32_t POSR : 16 */ P_PORT.POSR, dec2bin(buf[4], 16, P_PORT.POSR), // Pmn Output Set
+        /* uint32_t PORR : 16 */ P_PORT.PORR, dec2bin(buf[5], 16, P_PORT.PORR), // Pmn Output Reset
 
         /* Port Control Register 4 */
-        /* uint32_t EOSR : 16 */ P_PORT->EOSR, dec2bin(buf[6], 16, P_PORT->EOSR), // Pmn Event Output Set
-        /* uint32_t EORR : 16 */ P_PORT->EORR, dec2bin(buf[7], 16, P_PORT->EORR)  // Pmn Event Output Reset
+        /* uint32_t EOSR : 16 */ P_PORT.EOSR, dec2bin(buf[6], 16, P_PORT.EOSR), // Pmn Event Output Set
+        /* uint32_t EORR : 16 */ P_PORT.EORR, dec2bin(buf[7], 16, P_PORT.EORR)  // Pmn Event Output Reset
       );
     }
   }
@@ -588,51 +588,51 @@ class PeripheralMonitor {
    *------------------------------------------------------------*/
   void show_agt(int num) {
     if (0 <= num && num < sizeof(p_agt) / sizeof(p_agt[0])) {
-      volatile const R_AGT0_Type * P_AGT = p_agt[num];
+      /*volatile*/ const R_AGT0_Type P_AGT = *p_agt[num];
       printf(FMT_REGISTER_AGT,
         /* AGT No             */ num,
-        /* uint16_t AGT       */ P_AGT->AGT,              // 16bit counter and reload register
-        /* uint16_t AGTCMA    */ P_AGT->AGTCMA,           // AGT Compare Match A Register
-        /* uint16_t AGTCMB    */ P_AGT->AGTCMB,           // AGT Compare Match B Register
+        /* uint16_t AGT       */ P_AGT.AGT,              // 16bit counter and reload register
+        /* uint16_t AGTCMA    */ P_AGT.AGTCMA,           // AGT Compare Match A Register
+        /* uint16_t AGTCMB    */ P_AGT.AGTCMB,           // AGT Compare Match B Register
 
         /* AGT Control Register */
-        /* uint8_t TSTART : 1 */ P_AGT->AGTCR_b.TSTART,   // AGT count start
-        /* uint8_t TCSTF  : 1 */ P_AGT->AGTCR_b.TCSTF,    // AGT count status flag
-        /* uint8_t TSTOP  : 1 */ P_AGT->AGTCR_b.TSTOP,    // AGT count forced stop
-        /* uint8_t TEDGF  : 1 */ P_AGT->AGTCR_b.TEDGF,    // Active edge judgment flag
-        /* uint8_t TUNDF  : 1 */ P_AGT->AGTCR_b.TUNDF,    // Underflow flag
-        /* uint8_t TCMAF  : 1 */ P_AGT->AGTCR_b.TCMAF,    // Compare match A flag
-        /* uint8_t TCMBF  : 1 */ P_AGT->AGTCR_b.TCMBF,    // Compare match B flag
+        /* uint8_t TSTART : 1 */ P_AGT.AGTCR_b.TSTART,   // AGT count start
+        /* uint8_t TCSTF  : 1 */ P_AGT.AGTCR_b.TCSTF,    // AGT count status flag
+        /* uint8_t TSTOP  : 1 */ P_AGT.AGTCR_b.TSTOP,    // AGT count forced stop
+        /* uint8_t TEDGF  : 1 */ P_AGT.AGTCR_b.TEDGF,    // Active edge judgment flag
+        /* uint8_t TUNDF  : 1 */ P_AGT.AGTCR_b.TUNDF,    // Underflow flag
+        /* uint8_t TCMAF  : 1 */ P_AGT.AGTCR_b.TCMAF,    // Compare match A flag
+        /* uint8_t TCMBF  : 1 */ P_AGT.AGTCR_b.TCMBF,    // Compare match B flag
 
         /* AGT Mode Register 1 */
-        /* uint8_t TMOD   : 3 */ P_AGT->AGTMR1_b.TMOD,    // Operating mode
-        /* uint8_t TEDGPL : 1 */ P_AGT->AGTMR1_b.TEDGPL,  // Edge polarity
-        /* uint8_t TCK    : 3 */ P_AGT->AGTMR1_b.TCK,     // Count source
+        /* uint8_t TMOD   : 3 */ P_AGT.AGTMR1_b.TMOD,    // Operating mode
+        /* uint8_t TEDGPL : 1 */ P_AGT.AGTMR1_b.TEDGPL,  // Edge polarity
+        /* uint8_t TCK    : 3 */ P_AGT.AGTMR1_b.TCK,     // Count source
 
         /* AGT Mode Register 2 */
-        /* uint8_t CKS    : 3 */ P_AGT->AGTMR2_b.CKS,     // AGTLCLK/AGTSCLK count source clock frequency division ratio
-        /* uint8_t LPM    : 1 */ P_AGT->AGTMR2_b.LPM,     // Low Power Mode
+        /* uint8_t CKS    : 3 */ P_AGT.AGTMR2_b.CKS,     // AGTLCLK/AGTSCLK count source clock frequency division ratio
+        /* uint8_t LPM    : 1 */ P_AGT.AGTMR2_b.LPM,     // Low Power Mode
 
         /* AGT I/O Control Register */
-        /* uint8_t TEDGSEL: 1 */ P_AGT->AGTIOC_b.TEDGSEL, // I/O polarity switchFunction varies depending on the operating mode
-        /* uint8_t TOE    : 1 */ P_AGT->AGTIOC_b.TOE,     // AGTOn output enable
-        /* uint8_t TIPF   : 2 */ P_AGT->AGTIOC_b.TIPF,    // Input filter
-        /* uint8_t TIOGT  : 2 */ P_AGT->AGTIOC_b.TIOGT,   // Count control
+        /* uint8_t TEDGSEL: 1 */ P_AGT.AGTIOC_b.TEDGSEL, // I/O polarity switchFunction varies depending on the operating mode
+        /* uint8_t TOE    : 1 */ P_AGT.AGTIOC_b.TOE,     // AGTOn output enable
+        /* uint8_t TIPF   : 2 */ P_AGT.AGTIOC_b.TIPF,    // Input filter
+        /* uint8_t TIOGT  : 2 */ P_AGT.AGTIOC_b.TIOGT,   // Count control
 
         /* AGT Event Pin Select Register */
-        /* uint8_t EEPS   : 1 */ P_AGT->AGTISR_b.EEPS,    // AGTEE polarty selection
+        /* uint8_t EEPS   : 1 */ P_AGT.AGTISR_b.EEPS,    // AGTEE polarty selection
 
         /* AGT Compare Match Function Select Register */
-        /* uint8_t TCMEA  : 1 */ P_AGT->AGTCMSR_b.TCMEA,  // Compare match A register enable
-        /* uint8_t TOEA   : 1 */ P_AGT->AGTCMSR_b.TOEA,   // AGTOA output enable
-        /* uint8_t TOPOLA : 1 */ P_AGT->AGTCMSR_b.TOPOLA, // AGTOA polarity select
-        /* uint8_t TCMEB  : 1 */ P_AGT->AGTCMSR_b.TCMEB,  // Compare match B register enable
-        /* uint8_t TOEB   : 1 */ P_AGT->AGTCMSR_b.TOEB,   // AGTOB output enable
-        /* uint8_t TOPOLB : 1 */ P_AGT->AGTCMSR_b.TOEB,   // AGTOB polarity select
+        /* uint8_t TCMEA  : 1 */ P_AGT.AGTCMSR_b.TCMEA,  // Compare match A register enable
+        /* uint8_t TOEA   : 1 */ P_AGT.AGTCMSR_b.TOEA,   // AGTOA output enable
+        /* uint8_t TOPOLA : 1 */ P_AGT.AGTCMSR_b.TOPOLA, // AGTOA polarity select
+        /* uint8_t TCMEB  : 1 */ P_AGT.AGTCMSR_b.TCMEB,  // Compare match B register enable
+        /* uint8_t TOEB   : 1 */ P_AGT.AGTCMSR_b.TOEB,   // AGTOB output enable
+        /* uint8_t TOPOLB : 1 */ P_AGT.AGTCMSR_b.TOEB,   // AGTOB polarity select
 
         /* AGT Pin Select Register */
-        /* uint8_t SEL    : 2 */ P_AGT->AGTIOSEL_b.SEL,   // AGTIO pin select
-        /* uint8_t TIES   : 1 */ P_AGT->AGTIOSEL_b.TIES   // AGTIO input enable
+        /* uint8_t SEL    : 2 */ P_AGT.AGTIOSEL_b.SEL,   // AGTIO pin select
+        /* uint8_t TIES   : 1 */ P_AGT.AGTIOSEL_b.TIES   // AGTIO input enable
       );
     }
   }
