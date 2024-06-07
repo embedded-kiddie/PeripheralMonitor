@@ -36,12 +36,13 @@ typedef enum {
   PERIPHERAL_PFS,   // PmnPFS (P000 〜 P915)
   PERIPHERAL_PINS,  // D0 〜 D19 (A0 〜 A5)
   PERIPHERAL_AGT,   // AGT0 〜 AGT1
+  PERIPHERAL_CTSU,  // CTSU
 } PeripheralType_t;
 
 /*----------------------------------------------------------------------
  * Printf() buffer size
  *----------------------------------------------------------------------*/
-#define PRINTF_BUF_SIZE   756 // Max 617 at AGT caption
+#define PRINTF_BUF_SIZE   1024 // Max 986 at CTSU caption
 
 /*----------------------------------------------------------------------
  * Port/Pin related definition
@@ -68,7 +69,7 @@ typedef enum {
  * List of commands
  *----------------------------------------------------------------------*/
 static const char * cmd_list[] = {
-  "ports", "port", "pins", "p", "agt", "a", "d", "?", "help", NULL
+  "ports", "port", "pins", "p", "agt", "a", "d", "ctsu", "?", "help", NULL
 };
 
 /*----------------------------------------------------------------------
@@ -335,6 +336,147 @@ static const char * FMT_REGISTER_AGT = "\e[?25l\
 \e[13;60H%d\
 ";
 
+/*----------------------------------------------------------------------
+ * Capacitive Touch Sensing Unit escape code: CTSU
+ *----------------------------------------------------------------------*/
+static const char * FMT_CAPTION_CTSU = "\e[2J\
+\e[1;1HCTSU\
+\e[3;1HCR0\
+\e[4;2H- STRT[1]\
+\e[5;2H- CAP[1]\
+\e[6;2H- SNZ[1]\
+\e[7;2H- INIT[1]\
+\
+\e[9;1HCR1\
+\e[10;2H- PON[1]\
+\e[11;2H- CSW[1]\
+\e[12;2H- ATUNE0[1]\
+\e[13;2H- ATUNE1[1]\
+\e[14;2H- CLK[2]\
+\e[15;2H- MD[2]\
+\
+\e[17;1HSDPRS\
+\e[18;2H- PRRATIO[4]\
+\e[19;2H- PRMODE[2]\
+\e[20;2H- SOFF[1]\
+\
+\e[22;1HSST\
+\e[23;2H- SST[8]\
+\
+\e[3;21HMCH0/1\
+\e[4;22H- MCH0[6]\
+\e[5;22H- MCH1[6]\
+\
+\e[7;21HCHAC0/1/2/3/4\
+\e[8;22H- CHAC0[8]\
+\e[9;22H- CHAC1[8]\
+\e[10;22H- CHAC2[8]\
+\e[11;22H- CHAC3[8]\
+\e[12;22H- CHAC4[4]\
+\
+\e[14;21HCHTRC0/1/2/3/4\
+\e[15;22H- CHTRC0[8]\
+\e[16;22H- CHTRC1[8]\
+\e[17;22H- CHTRC2[8]\
+\e[18;22H- CHTRC3[8]\
+\e[19;22H- CHTRC4[8]\
+\
+\e[21;21HDCLKC\
+\e[22;22H- SSMOD[2]\
+\e[23;22H- SSCNT[2]\
+\
+\e[3;42HST\
+\e[4;43H- STC[3]\
+\e[5;43H- DTSR[1]\
+\e[6;43H- SOVF[1]\
+\e[7;43H- ROVF[1]\
+\e[8;43H- PS[1]\
+\
+\e[10;42HSSC\
+\e[11;43H- SSDIV[4]\
+\
+\e[13;42HSO0\
+\e[14;43H- SO[10]\
+\e[15;43H- SNUM[6]\
+\
+\e[17;42HSO1\
+\e[18;43H- RICOA[8]\
+\e[19;43H- SDPA[5]\
+\e[20;43H- ICOG[2]\
+\
+\e[3;61HERRS\
+\e[4;62H- SPMD[2]\
+\e[5;62H- TSOD[1]\
+\e[6;62H- DRV[1]\
+\e[7;62H- CLKSEL1[1]\
+\e[8;62H- TSOC[1]\
+\e[9;62H- ICOMP[1]\
+\
+\e[11;61HSC/RC\
+\e[12;62H- SC[16]    n/a\
+\e[13;62H- RC[16]    n/a\
+ ";
+
+static const char * FMT_REGISTER_CTSU = "\e[?25l\
+\e[4;17H%d\
+\e[5;17H%d\
+\e[6;17H%d\
+\e[7;17H%d\
+\
+\e[10;17H%d\
+\e[11;17H%d\
+\e[12;17H%d\
+\e[13;17H%d\
+\e[14;15H0x%X\
+\e[15;15H0x%X\
+\
+\e[18;15H0x%X\
+\e[19;15H0x%X\
+\e[20;17H%d\
+\
+\e[23;14H0x%02X\
+\
+\e[4;35H0x%02X\
+\e[5;35H0x%02X\
+\
+\e[8;35H0x%02X\
+\e[9;35H0x%02X\
+\e[10;35H0x%02X\
+\e[11;35H0x%02X\
+\e[12;35H0x%02X\
+\
+\e[15;35H0x%02X\
+\e[16;35H0x%02X\
+\e[17;35H0x%02X\
+\e[18;35H0x%02X\
+\e[19;35H0x%02X\
+\
+\e[22;36H0x%X\
+\e[23;36H0x%X\
+\
+\e[4;55H0x%X\
+\e[5;57H%d\
+\e[6;57H%d\
+\e[7;57H%d\
+\e[8;57H%d\
+\
+\e[11;55H0x%X\
+\
+\e[14;54H%4d\
+\e[15;54H0x%02X\
+\
+\e[18;54H0x%02X\
+\e[19;54H0x%02X\
+\e[20;55H0x%X\
+\
+\e[4;74H0x%X\
+\e[5;76H%d\
+\e[6;76H%d\
+\e[7;76H%d\
+\e[8;76H%d\
+\e[9;76H%d\
+";
+
 /*--------------------------------------------------------------------------------------------
  * Class definition
  *-------------------------------------------------------------------------------------------*/
@@ -483,6 +625,14 @@ class PeripheralMonitor {
       return;
     }
     Serial.println("AGT: out of range.");
+  }
+
+  /*------------------------------------------------------------
+   * Setup peripheral registers: CTSU
+   *------------------------------------------------------------*/
+  void setup_ctsu(int arg) {
+    peripheral = PERIPHERAL_CTSU;
+    return;
   }
 
   void show_help(int i) {
@@ -637,6 +787,86 @@ class PeripheralMonitor {
     }
   }
 
+  /*------------------------------------------------------------
+   * Show peripheral registers: CTSU
+   *------------------------------------------------------------*/
+  void show_ctsu(int arg) {
+    Serial.println("CTSU: " + String(strlen(FMT_CAPTION_CTSU)));
+    printf(FMT_REGISTER_CTSU,
+      /* CTSUCR1: CTSU Control Register 0 */
+      R_CTSU->CTSUCR0_b.CTSUSTRT,       // Measurement Operation Start
+      R_CTSU->CTSUCR0_b.CTSUCAP,        // Measurement Operation Start Trigger Select
+      R_CTSU->CTSUCR0_b.CTSUSNZ,        // Wait State Power-Saving Enable
+      R_CTSU->CTSUCR0_b.CTSUIOC,        // Transmit Pin Control
+      R_CTSU->CTSUCR0_b.CTSUINIT,       // Control Block Initialization 
+
+      /* CTSUCR1: CTSU Control Register 1 */
+      R_CTSU->CTSUCR1_b.CTSUPON,        // Power Supply Enable
+      R_CTSU->CTSUCR1_b.CTSUCSW,        // LPF Capacitance Charging Control
+      R_CTSU->CTSUCR1_b.CTSUATUNE0,     // Power Supply Operating Mode Setting
+      R_CTSU->CTSUCR1_b.CTSUATUNE1,     // Power Supply Capacity Adjustment
+      R_CTSU->CTSUCR1_b.CTSUCLK,        // Operating Clock Select
+      R_CTSU->CTSUCR1_b.CTSUMD,         // Measurement Mode Select
+
+      /* CTSUSDPRS: CTSU Synchronous Noise Reduction Setting Register */
+      R_CTSU->CTSUSDPRS_b.CTSUPRRATIO,  // Measurement Time and Pulse Count Adjustment
+      R_CTSU->CTSUSDPRS_b.CTSUPRMODE,   // Base Period and Pulse Count Setting
+      R_CTSU->CTSUSDPRS_b.CTSUSOFF,     // High-Pass Noise Reduction Function Off Setting
+
+      /* CTSUSST: CTSU Sensor Stabilization Wait Control Register */
+      R_CTSU->CTSUSST,                  // Sensor Stabilization Wait ControlNOTE: The value
+
+      /* CTSUMCH0/1: CTSU Measurement Channel Register 0/1 */
+      R_CTSU->CTSUMCH0,                 // Measurement Channel 0
+      R_CTSU->CTSUMCH1,                 // Measurement Channel 1
+
+      /* CTSUCHAC0/1/2/3/4: CTSU Channel Enable Control Register */
+      R_CTSU->CTSUCHAC[0],              // Channel Enable Control
+      R_CTSU->CTSUCHAC[1],              // Channel Enable Control
+      R_CTSU->CTSUCHAC[2],              // Channel Enable Control
+      R_CTSU->CTSUCHAC[3],              // Channel Enable Control
+      R_CTSU->CTSUCHAC[4],              // Channel Enable Control
+
+      /* CTSUCHTRC0/1/2/3/4: CTSU Channel Transmit/Receive Control Register */
+      R_CTSU->CTSUCHTRC[0],             // Channel Transmit/Receive Control
+      R_CTSU->CTSUCHTRC[1],             // Channel Transmit/Receive Control
+      R_CTSU->CTSUCHTRC[2],             // Channel Transmit/Receive Control
+      R_CTSU->CTSUCHTRC[3],             // Channel Transmit/Receive Control
+      R_CTSU->CTSUCHTRC[4],             // Channel Transmit/Receive Control
+
+      /* CTSUDCLKC: CTSU High-Pass Noise Reduction Control Register */
+      R_CTSU->CTSUDCLKC_b.CTSUSSMOD,    // Diffusion Clock Mode Select
+      R_CTSU->CTSUDCLKC_b.CTSUSSCNT,    // Diffusion Clock Mode Control
+
+      /* CTSUST: CTSU Status Register */
+      R_CTSU->CTSUST_b.CTSUSTC,         // Measurement Status Counter
+      R_CTSU->CTSUST_b.CTSUDTSR,        // Data Transfer Status Flag
+      R_CTSU->CTSUST_b.CTSUSOVF,        // Sensor Counter Overflow Flag
+      R_CTSU->CTSUST_b.CTSUROVF,        // Reference Counter Overflow Flag
+      R_CTSU->CTSUST_b.CTSUPS,          // Mutual Capacitance Status Flag
+
+      /* CTSUSSC: CTSU High-Pass Noise Reduction Spectrum Diffusion ontrol Register */
+      R_CTSU->CTSUSSC_b.CTSUSSDIV,      // Spectrum Diffusion Frequency Division Setting
+
+      /* CTSUSO0: CTSU Sensor Offset Register 0 */
+      R_CTSU->CTSUSO0_b.CTSUSO,         // Sensor Offset Adjustment
+      R_CTSU->CTSUSO0_b.CTSUSNUM,       // Measurement Count Setting
+
+      /* CTSUSO1: CTSU Sensor Offset Register 1 */
+      R_CTSU->CTSUSO1_b.CTSURICOA,      // Reference ICO Current Adjustment
+      R_CTSU->CTSUSO1_b.CTSUSDPA,       // SettingOperating clock divided by (CTSUSDPA + 1) x 2
+      R_CTSU->CTSUSO1_b.CTSUICOG,       // ICO Gain Adjustment
+
+      /* CTSUERRS: CTSU Error Status Register */
+      R_CTSU->CTSUERRS_b.CTSUSPMD,      // Calibration Mode
+      R_CTSU->CTSUERRS_b.CTSUTSOD,      // TS Pin Fixed Output
+      R_CTSU->CTSUERRS_b.CTSUDRV,       // Calibration Setting 1
+      R_CTSU->CTSUERRS_b.CTSUCLKSEL1,   // Calibration Setting 3
+      R_CTSU->CTSUERRS_b.CTSUTSOC,      // Calibration Setting 2
+      R_CTSU->CTSUERRS_b.CTSUICOMP      // TSCAP Voltage Error Monitor
+    );
+  }
+
   /*----------------------------------------------------------------------------------*/
   public:
   /*----------------------------------------------------------------------------------*/
@@ -650,6 +880,7 @@ class PeripheralMonitor {
       case PERIPHERAL_PFS:   setup_pfs(arg); break;
       case PERIPHERAL_PINS:  setup_pins(arg); break;
       case PERIPHERAL_AGT:   setup_agt(arg); break;
+      case PERIPHERAL_CTSU:  setup_ctsu(arg); break;
       default: break;
     }
   }
@@ -663,6 +894,7 @@ class PeripheralMonitor {
       case PERIPHERAL_PFS:    printf(FMT_CAPTION_PFS);    break;  // PmnPFS (P000 〜 P915)
       case PERIPHERAL_PINS:   printf(FMT_CAPTION_PINS);   break;  // A0 〜 A5, D0 〜 D19
       case PERIPHERAL_AGT:    printf(FMT_CAPTION_AGT);    break;  // AGT0 〜 ARG1
+      case PERIPHERAL_CTSU:   printf(FMT_CAPTION_CTSU);   break;  // CTSU
     }
   }
 
@@ -676,6 +908,7 @@ class PeripheralMonitor {
       case PERIPHERAL_PFS:    show_pfs(num_pfs, num_pin); break;  // PmnPFS (P000 〜 P915)
       case PERIPHERAL_PINS:   show_pins();                break;  // A0 〜 A5, D0 〜 D19
       case PERIPHERAL_AGT:    show_agt(num_agt);          break;  // AGT0 〜 ARG1
+      case PERIPHERAL_CTSU:   show_ctsu(num_agt);         break;  // ctsu
     }
   }
 
@@ -687,7 +920,7 @@ class PeripheralMonitor {
       cmd.trim();
       cmd.toLowerCase();
 
-      // "ports", "port", "pins", "p", "agt", "a", "d", "?", "help", NULL
+      // "ports", "port", "pins", "p", "agt", "a", "d", "ctsu", "?", "help", NULL
       int num = -1, arg = -1;
       for (int i = 0; cmd_list[i] != NULL; i++) {
         if (cmd.startsWith(cmd_list[i])) {
@@ -705,8 +938,9 @@ class PeripheralMonitor {
         case 4: setup_agt(arg);     break;  // AGT0 〜 ARG1
         case 5: setup_analog(arg);  break;  // A0 〜 A5
         case 6: setup_digital(arg); break;  // D0 〜 D19
-        case 7:
-        case 8: show_help(arg); break;
+        case 7: setup_ctsu(arg);    break;  // CTSU
+        case 8:
+        case 9: show_help(arg); break;
         default: break;
       }
       show_caption();
