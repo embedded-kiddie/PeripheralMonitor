@@ -791,7 +791,7 @@ class PeripheralMonitor {
    * Show peripheral registers: CTSU
    *------------------------------------------------------------*/
   void show_ctsu(int arg) {
-    Serial.println("CTSU: " + String(strlen(FMT_CAPTION_CTSU)));
+//  Serial.println("CTSU: " + String(strlen(FMT_CAPTION_CTSU)));
     printf(FMT_REGISTER_CTSU,
       /* CTSUCR1: CTSU Control Register 0 */
       R_CTSU->CTSUCR0_b.CTSUSTRT,       // Measurement Operation Start
