@@ -39,7 +39,12 @@ void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
 
   Serial.begin(115200);
-  while (!Serial && (millis() < 1000));
+  while (!Serial);
+
+#ifdef  ARDUINO_UNOR4_WIFI
+  // UNO R4 WiFi needs to wait for a while to complete Serial initialization.
+  delay(1000); // It requires at least 600 ms.
+#endif
 
   /*
    * PERIPHERAL_PORTS, // PORT0 〜 PORT9 (default)
