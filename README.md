@@ -40,6 +40,9 @@ You can see the following five screens through the terminal emulator on your hos
 - AGT _n_
   Asynchronous General-Purpose Timer register of AGT _n_ where _n_ is `0` or `1`, such as `AGT0`
   ![AGT0]
+- CTSU  
+  Capacitive Touch Sensing Unit registers
+  ![CTSU]
 
 ## Public methods in `PeripheralMonitor` class
 
@@ -142,3 +145,5 @@ See [monitor_by_rtc.ino][4] using RTC for periodic monitoring in the [_examples_
 [PINS]:https://embedded-kiddie.github.io/images/2024/06-03/registers-PINS.gif
 
 [AGT0]:https://embedded-kiddie.github.io/images/2024/06-03/registers-AGT.gif
+
+[CTSU]:https://embedded-kiddie.github.io/images/2024/06-03/registers-CTSU.gif
