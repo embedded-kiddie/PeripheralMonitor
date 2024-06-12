@@ -68,6 +68,7 @@ typedef enum {
   PERIPHERAL_PFS,   // PmnPFS (P000 〜 P915)
   PERIPHERAL_PINS,  // D0 〜 D19 (A0 〜 A5)
   PERIPHERAL_AGT,   // AGT0 〜 AGT1
+  PERIPHERAL_CTSU,  // CTSU
 } PeripheralType_t;
 ```
   - `int arg`  
@@ -107,7 +108,7 @@ This method accepts your commands from Arduino IDE Serial Monitor.
 You can type `?` or `help` into the Serial Monitor to see the following result:
 
 ```bash
-Possible commands: ports, port, pins, p, agt, a, d, ?, help
+Possible commands: ports, port, pins, p, agt, a, d, ctsu, ?, help
 ```
 
 For example, you can type such as `port1`, `p102`, `agt0`, `a0` and `d13`.
