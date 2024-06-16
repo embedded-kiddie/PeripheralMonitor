@@ -797,7 +797,7 @@ class PeripheralMonitor {
       R_CTSU->CTSUCR0_b.CTSUSTRT,       // Measurement Operation Start
       R_CTSU->CTSUCR0_b.CTSUCAP,        // Measurement Operation Start Trigger Select
       R_CTSU->CTSUCR0_b.CTSUSNZ,        // Wait State Power-Saving Enable
-      R_CTSU->CTSUCR0_b.CTSUIOC,        // Transmit Pin Control
+//    R_CTSU->CTSUCR0_b.CTSUIOC,        // Transmit Pin Control
       R_CTSU->CTSUCR0_b.CTSUINIT,       // Control Block Initialization 
 
       /* CTSUCR1: CTSU Control Register 1 */

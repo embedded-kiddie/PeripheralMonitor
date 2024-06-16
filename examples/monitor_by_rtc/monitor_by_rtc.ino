@@ -52,6 +52,7 @@ void setup() {
    * PERIPHERAL_PFS,   // PmnPFS (P000 〜 P915)
    * PERIPHERAL_PINS,  // D0 〜 D19 (A0 〜 A5)
    * PERIPHERAL_AGT,   // AGT0 〜 AGT1
+   * PERIPHERAL_CTSU,  // CTSU
    */
   monitor.begin(230400, PERIPHERAL_PFS, digitalPinToPmn(LED_BUILTIN)); // Baud rate: Mac 230400, Windows 921600
 
