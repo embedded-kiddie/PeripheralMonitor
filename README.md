@@ -147,4 +147,4 @@ See [monitor_by_rtc.ino][4] using RTC for periodic monitoring in the [_examples_
 
 [AGT0]:https://embedded-kiddie.github.io/images/2024/06-03/registers-AGT.gif
 
-[CTSU]:https://embedded-kiddie.github.io/images/2024/06-03/registers-CTSU.gif
+[CTSU]:https://embedded-kiddie.github.io/images/2024/06-16/CTSU-monitor.gif
