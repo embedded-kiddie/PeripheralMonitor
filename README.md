@@ -1,5 +1,5 @@
 # PeripheralMonitor
-For the purpose of learning the [RA4M1], this program monitors peripheral registers through the Arduino Minima/WiFe external serial I/F at `D0(RX)` / `D1(TX)`.
+For the purpose of learning the [RA4M1], this program monitors peripheral registers through the Arduino Minima/WiFe external serial I/F at `D0(RX)`/`D1(TX)`.
 
 ## How to use
 
