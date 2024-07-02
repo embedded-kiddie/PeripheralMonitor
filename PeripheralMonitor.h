@@ -109,7 +109,7 @@ static const char * FMT_CAPTION_PORTS = "\e[2J\
 \e[15;1HPCNTR4\
 \e[16;2H- EOSR[16]\
 \e[17;2H- EORR[16]\
- ";
+";
 
 static const char * FMT_REGISTER_PORTS = "\
 \e[?25l\
@@ -148,7 +148,7 @@ static const char * FMT_CAPTION_PORT = "\e[2J\
 \e[15;1HPCNTR4\
 \e[16;2H- EOSR[16]\
 \e[17;2H- EORR[16]\
- ";
+";
 
 static const char * FMT_REGISTER_PORT = "\e[?25l\
 \e[1;5H%d\
@@ -185,7 +185,7 @@ static const char * FMT_CAPTION_PFS = "\e[2J\
 \e[13;2H- ASEL[1]\
 \e[14;2H- PMR[1]\
 \e[15;2H- PSEL[5]\
- ";
+";
 
 static const char * FMT_REGISTER_PFS = "\e[?25l\
 \
@@ -225,7 +225,7 @@ static const char * FMT_CAPTION_PINS = "\e[2J\
 \e[13;2H- ASEL[1]\
 \e[14;2H- PMR[1]\
 \e[15;2H- PSEL[5]\
- ";
+";
 
 static const char * FMT_REGISTER_PINS = "\e[?25l\
 \e[4;%dH%%d\
@@ -295,7 +295,7 @@ static const char * FMT_CAPTION_AGT = "\e[2J\
 \e[11;45HAGTIOSEL\
 \e[12;46H- SEL[2]\
 \e[13;46H- TIES[1]\
- ";
+";
 
 static const char * FMT_REGISTER_AGT = "\e[?25l\
 \e[1;4H%d\
@@ -415,7 +415,7 @@ static const char * FMT_CAPTION_CTSU = "\e[2J\
 \e[11;61HSC/RC\
 \e[12;62H- SC[16]    n/a\
 \e[13;62H- RC[16]    n/a\
- ";
+";
 
 static const char * FMT_REGISTER_CTSU = "\e[?25l\
 \e[4;17H%d\
@@ -508,7 +508,7 @@ class PeripheralMonitor {
 #endif
 
     // output to the serial console through the 'Serial'
-    len = Serial1.write((uint8_t*)buf, (size_t)len); 
+    len = Serial1.write((uint8_t*)buf, (size_t)(len + 1)); 
 
 #if DEBUG && 0
     Serial.println("availableForWrite = " + String(Serial1.availableForWrite()));
